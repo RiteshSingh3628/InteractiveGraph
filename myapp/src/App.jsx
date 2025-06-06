@@ -1,5 +1,5 @@
 import React from 'react'
-import Dashborad from './pages/Dashborad'
+import Dashborad from './pages/Dashboard'
 
 function App() {
   return (

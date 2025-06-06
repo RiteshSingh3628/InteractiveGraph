@@ -5,13 +5,13 @@ function CustomNode({ data, isConnectable, selected }) {
   return (
     <div className="relative group">
       {/* Glow effect on hover */}
-      <div className={`absolute -inset-0.5 bg-gradient-to-r from-[#ffc300] to-[#ffd60a] rounded-lg blur opacity-0 ${selected ? 'opacity-75' : 'group-hover:opacity-75'} transition duration-300`}></div>
+      <div className={`absolute -inset-0.5 bg-gradient-to-r from-[#ff8800] to-[#ffa50a] rounded-lg blur opacity-0 ${selected ? 'opacity-75' : 'group-hover:opacity-75'} transition duration-300`}></div>
       
       {/* Main node container */}
       <div className={`relative px-6 py-4 bg-[#001d3d] rounded-lg border-2 ${selected ? 'border-[#ffd60a]' : 'border-[#ffc300] group-hover:border-[#ffd60a]'} transition-all duration-300`}>
         {/* Tooltip */}
         {selected && (
-          <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-[#001d3d] text-[#ffc300] px-2 py-1 rounded text-sm whitespace-nowrap">
+          <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-[#d9e1e9] text-[#100e0e] px-2 py-1 rounded text-sm whitespace-nowrap">
             Press Backspace to delete
           </div>
         )}
@@ -34,7 +34,7 @@ function CustomNode({ data, isConnectable, selected }) {
 
           {/* Description if available */}
           {data.description && (
-            <div className={`${selected ? 'text-[#ffd60a]' : 'text-[#003566] group-hover:text-[#d3d3d3]'} text-sm mt-1 transition-colors duration-300`}>
+            <div className={`${selected ? 'text-[#ffd60a]' : 'text-[#d2dbe3] group-hover:text-[#d3d3d3]'} text-sm mt-1 transition-colors duration-300`}>
               {data.description}
             </div>
           )}

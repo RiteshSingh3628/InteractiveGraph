@@ -112,27 +112,6 @@ function Dashborad() {
       },[selectedEdge]);
       
 
-    // Update nodes with selection state
-    const nodesWithSelection = nodes.map(node => ({
-        ...node,
-        selected: selectedNode?.id === node.id,
-        style: {
-            opacity: selectedNode && selectedNode.id !== node.id ? 0.5 : 1,
-            transition: 'opacity 0.3s ease'
-        }
-    }));
-
-    // Update edges with selection state
-    const edgesWithSelection = edges.map(edge => ({
-        ...edge,
-        selected: selectedEdge?.id === edge.id,
-        style: {
-            ...edge.style,
-            opacity: selectedEdge && selectedEdge.id !== edge.id ? 0.5 : 1,
-            transition: 'opacity 0.3s ease'
-        }
-    }));
-
     return (
       <>
         <main style={{ backgroundColor: mainBg }} className="w-full h-screen flex">
@@ -178,8 +157,8 @@ function Dashborad() {
             {/* graph component */}
             <div className='flex-1 w-full rounded-2xl overflow-hidden' style={{backgroundColor: subBg}}>
               <ReactFlow className="w-full h-full"
-                nodes={nodesWithSelection}
-                edges={edgesWithSelection}
+                nodes={nodes}
+                edges={edges}
                 onNodesChange={onNodesChange}
                 onEdgesChange={onEdgesChange}
                 onConnect={onConnect}
@@ -187,11 +166,31 @@ function Dashborad() {
                 onNodeClick={onNodeClick}
                 onEdgeClick={onEdgeClick}
                 fitView
+              
               >
                 <Controls showInteractive={true} />
                 <Panel position="top-left" style={{color: text}}>Your Graph</Panel>
                 <Background variant={selectedValue}/>
-                <MiniMap/>
+                <MiniMap 
+                    pannable={true}
+                    nodeColor={(node) => {
+                        switch (node.type) {
+                            case 'custom-node':
+                                return '#ffc300';
+                            default:
+                                return '#ffd60a';
+                        }
+                    }}
+                    maskColor="rgba(0, 29, 61, 0.3)"
+                    style={{
+                        backgroundColor: subSubBg,
+                        borderRadius: '8px',
+                        border: `2px solid ${subHeading}`
+                    }}
+                    zoomable={true}
+                    nodeStrokeWidth={3}
+                    nodeStrokeColor="#ffc300"
+                />
               </ReactFlow>
             </div>
           </section>
