@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { ReactFlow, Controls, Panel, Background, useNodesState, useEdgesState, MiniMap, addEdge } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import CustomNode from '../components/CustomNode';
+import NodeModal from '../components/NodeModal';
 import { initialNodes, initialEdges } from '../data/jsonData';
 
 
@@ -16,6 +17,9 @@ const text = "#d3d3d3"
 function Dashborad() {
     const [isPanelOpen, setIsPanelOpen] = useState(true);
     const [selectedValue, setSelectedValue] = useState('Select Background');
+    const [searchQuery, setSearchQuery] = useState('');
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editingNodeId, setEditingNodeId] = useState(null);
 
     //click to select the node and store
     const [selectedNode,setSelectedNode] = useState(null);
@@ -25,11 +29,20 @@ function Dashborad() {
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
+    // Filter nodes based on search query
+    const filteredNodes = nodes.filter(node => {
+        const searchLower = searchQuery.toLowerCase();
+        return (
+            node.data.label.toLowerCase().includes(searchLower) ||
+            node.data.description.toLowerCase().includes(searchLower)
+        );
+    });
+
     const onConnect = useCallback(
         (connection) => {
           const edge = { 
             ...connection,
-            animated: true,
+            animated: false,
             style: { stroke: '#ffc300' }
           };
           setEdges((eds) => addEdge(edge, eds));
@@ -38,8 +51,12 @@ function Dashborad() {
     );
 
     // onClick event for node
-    const onNodeClick = (event,node)=>{
+    const onNodeClick = (event, node) => {
         setSelectedNode(node);
+        if (node.data.isNew) {
+            setEditingNodeId(node.id);
+            setIsModalOpen(true);
+        }
     }
     // onClick event for edge
     const onEdgeClick = (event,node)=>{
@@ -65,7 +82,8 @@ function Dashborad() {
             position: { x: Math.random() * 400, y: Math.random() * 400 },
             data: { 
                 label: `Service ${nodes.length + 1}`,
-                description: 'Click to connect nodes'
+                description: 'Click to add data',
+                isNew: true
             },
         };
         setNodes((nds) => nds.concat(newNode));
@@ -112,6 +130,31 @@ function Dashborad() {
       },[selectedEdge]);
       
 
+    // Handle node data update
+    const handleNodeDataUpdate = (nodeId, newData) => {
+        setNodes((nds) =>
+            nds.map((node) => {
+                if (node.id === nodeId) {
+                    return {
+                        ...node,
+                        data: {
+                            ...node.data,
+                            ...newData,
+                            isNew: false,
+                            metrics: {
+                                traffic: `${newData.traffic}%`,
+                                errorRate: `${newData.errorRate}%`,
+                                latency: `${newData.latency}ms`,
+                                status: newData.status
+                            }
+                        }
+                    };
+                }
+                return node;
+            })
+        );
+    };
+
     return (
       <>
         <main style={{ backgroundColor: mainBg }} className="w-full h-screen flex">
@@ -123,6 +166,17 @@ function Dashborad() {
             <h2 style={{ color: mainHeading }} className="text-2xl font-bold">Control Panel</h2>
             <p style={{ color: text }} className="mt-2">Manage Your Graph</p>
             <hr className={`mt-5 text-amber-300`}/>
+
+            {/* Search Bar */}
+            <div className="w-full p-2">
+                <input
+                    type="text"
+                    placeholder="Search services..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full p-2 rounded-lg bg-[#003566] text-[#d3d3d3] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#ffc300]"
+                />
+            </div>
 
             <div className='w-full flex flex-col gap-4 p-2'>
                 <button onClick={createNode} className='flex items-center gap-2 hover:bg-[#003566] p-2 rounded-lg transition-colors' style={{color: subHeading}}>
@@ -157,7 +211,7 @@ function Dashborad() {
             {/* graph component */}
             <div className='flex-1 w-full rounded-2xl overflow-hidden' style={{backgroundColor: subBg}}>
               <ReactFlow className="w-full h-full"
-                nodes={nodes}
+                nodes={filteredNodes}
                 edges={edges}
                 onNodesChange={onNodesChange}
                 onEdgesChange={onEdgesChange}
@@ -166,7 +220,6 @@ function Dashborad() {
                 onNodeClick={onNodeClick}
                 onEdgeClick={onEdgeClick}
                 fitView
-              
               >
                 <Controls showInteractive={true} />
                 <Panel position="top-left" style={{color: text}}>Your Graph</Panel>
@@ -195,6 +248,15 @@ function Dashborad() {
             </div>
           </section>
         </main>
+        <NodeModal
+            isOpen={isModalOpen}
+            onClose={() => {
+                setIsModalOpen(false);
+                setEditingNodeId(null);
+            }}
+            onSubmit={handleNodeDataUpdate}
+            nodeId={editingNodeId}
+        />
       </>
     )
 }

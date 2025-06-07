@@ -5,7 +5,13 @@ export const initialNodes = [
         position: { x: 250, y: 100 },
         data: { 
             label: 'API Gateway',
-            description: 'Main entry point for all services'
+            description: 'Main entry point for all services',
+            metrics: {
+                traffic: '85%',
+                errorRate: '0.5%',
+                latency: '120ms',
+                status: 'healthy'
+            }
         }
     },
     {
@@ -14,7 +20,13 @@ export const initialNodes = [
         position: { x: 100, y: 250 },
         data: { 
             label: 'User Service',
-            description: 'Handles user authentication and management'
+            description: 'Handles user authentication and management',
+            metrics: {
+                traffic: '65%',
+                errorRate: '1.2%',
+                latency: '85ms',
+                status: 'warning'
+            }
         }
     },
     {
@@ -23,7 +35,13 @@ export const initialNodes = [
         position: { x: 400, y: 250 },
         data: { 
             label: 'Product Service',
-            description: 'Manages product catalog and inventory'
+            description: 'Manages product catalog and inventory',
+            metrics: {
+                traffic: '45%',
+                errorRate: '0.8%',
+                latency: '95ms',
+                status: 'healthy'
+            }
         }
     },
     {
@@ -32,7 +50,13 @@ export const initialNodes = [
         position: { x: 250, y: 400 },
         data: { 
             label: 'Order Service',
-            description: 'Processes and manages orders'
+            description: 'Processes and manages orders',
+            metrics: {
+                traffic: '55%',
+                errorRate: '2.1%',
+                latency: '150ms',
+                status: 'error'
+            }
         }
     },
     {
@@ -41,7 +65,13 @@ export const initialNodes = [
         position: { x: 550, y: 400 },
         data: { 
             label: 'Payment Service',
-            description: 'Handles payment processing'
+            description: 'Handles payment processing',
+            metrics: {
+                traffic: '35%',
+                errorRate: '0.3%',
+                latency: '75ms',
+                status: 'healthy'
+            }
         }
     }
 ];
