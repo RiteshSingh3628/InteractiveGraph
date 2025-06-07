@@ -37,12 +37,12 @@ function Dashborad() {
             node.data.description.toLowerCase().includes(searchLower)
         );
     });
-
+    // on connecting edge it callsthis function
     const onConnect = useCallback(
         (connection) => {
           const edge = { 
             ...connection,
-            animated: false,
+            animated: true,
             style: { stroke: '#ffc300' }
           };
           setEdges((eds) => addEdge(edge, eds));
